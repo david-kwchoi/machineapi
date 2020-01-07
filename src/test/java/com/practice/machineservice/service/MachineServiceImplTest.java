@@ -24,7 +24,7 @@ public class MachineServiceImplTest {
     private MachineRepository machineRepository;
 
     @Test
-    public void getMachine_returnMachineInfo() {
+    public void testGetMachine() {
         given(machineRepository.findByName("plating1"))
                 .willReturn(new Machine("plating1", "Gold plating machine #1", 10));
 

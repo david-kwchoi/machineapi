@@ -1,12 +1,14 @@
 package com.practice.machineservice.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 public class Machine {
 
     @Id
+    @GeneratedValue
     private Long Id;
     private String name;
     private String description;
@@ -16,6 +18,9 @@ public class Machine {
         this.name = name;
         this.description = description;
         this.throughputMins = throughputMins;
+    }
+
+    public Machine() {
     }
 
     public String getName() {

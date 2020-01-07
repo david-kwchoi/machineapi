@@ -18,4 +18,9 @@ public class MachineServiceImpl implements MachineService {
             throw new MachineNotFoundException(String.format("Machine [%s] not found.", name));
         return result;
     }
+
+    @Override
+    public Machine createMachine(Machine input) {
+        return null;
+    }
 }

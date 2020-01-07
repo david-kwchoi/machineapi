@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,7 +27,7 @@ public class MachineControllerTest {
     private MachineService machineService;
 
     @Test
-    public void getMachine_ShouldReturnMachine() throws Exception {
+    public void testGetMachineByName() throws Exception {
         given(machineService.getMachine("plating1")).willReturn(new Machine("plating1", "Gold plating machine #1", 10));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/machine/plating1"))
@@ -37,10 +38,17 @@ public class MachineControllerTest {
     }
 
     @Test
-    public void getMachine_NotFound() throws Exception {
+    public void testGetMachineWithMachineNotFoundException() throws Exception {
         given(machineService.getMachine(anyString())).willThrow(new MachineNotFoundException());
 
         mockMvc.perform(MockMvcRequestBuilders.get("machine/plating9"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testCreateMachine() throws Exception {
+        given(machineService.createMachine(any(Machine.class))).willReturn(any(Machine.class));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("machine")).andExpect(status().isCreated());
     }
 }

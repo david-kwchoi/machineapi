@@ -5,6 +5,7 @@ import com.practice.machineservice.service.MachineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,5 +18,10 @@ public class MachineController {
         return machineService.getMachine(name);
     }
 
+
+    @PostMapping("/machine")
+    private Machine createMachine(Machine input) {
+        return machineService.createMachine(input);
+    }
 
 }
