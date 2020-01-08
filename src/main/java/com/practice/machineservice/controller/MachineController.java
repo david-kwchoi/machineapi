@@ -68,7 +68,7 @@ public class MachineController {
         log.info("Received upsertMachine request for id [{}] input [{}]", id, input);
         if (!machineService.getMachineById(id).isPresent()) {
             log.warn("Machine id [{}] not found. Attempting to createMachine with input[{}]", id, input);
-            return new ResponseEntity<>(machineService.createMachine(new Machine(id, input)), HttpStatus.CREATED);
+            return new ResponseEntity<>(machineService.createMachine(input), HttpStatus.CREATED);
         } else {
             return ResponseEntity.ok(machineService.updateMachine(id, input));
         }

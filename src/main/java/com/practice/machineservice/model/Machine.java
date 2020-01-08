@@ -27,14 +27,6 @@ public class Machine {
         this.throughputMins = throughputMins;
     }
 
-    public Machine(Long id, Machine input) {
-        this.id = id;
-        this.name = input.name;
-        this.description = input.description;
-        this.throughputMins = input.throughputMins;
-    }
-
-
     public Machine(Long id, String name, String description, int throughputMins) {
         this.id = id;
         this.name = name;

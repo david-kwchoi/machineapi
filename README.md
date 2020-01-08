@@ -3,8 +3,8 @@
 A machine service REST API using SpringBoot. 
 
 The basic entitiy of service is the Machine entity. 
-* name: String - must be less than or equal to 40 characters
-* description: String
+* name: String - must be less than or equal to 80 characters
+* description: String - optional description fields for the machine
 * throughputMins: Integer - machine throughput per mins. Must be a positive integer.
 
 The REST services supports the following operations
