@@ -14,7 +14,7 @@ public class Machine {
     private Long id;
 
     @NotNull
-    @Size(max = 40, message = "name must be less than/equal to 40 characters")
+    @Size(max = 80, message = "name must be less than/equal to 80 characters")
     private String name;
     private String description;
 

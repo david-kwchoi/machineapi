@@ -118,7 +118,7 @@ public class MachineControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(INVALID_NAME_MACHINE_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("name").value("name must be less than/equal to 40 characters"))
+                .andExpect(jsonPath("name").value("name must be less than/equal to 80 characters"))
                 .andExpect(jsonPath("timestamp").exists());
     }
 

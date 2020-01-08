@@ -88,7 +88,7 @@ public class MachineServiceIntegrationTest {
 
         ResponseEntity<String> invalidResult = restTemplate.postForEntity("/machine/" + createResp.getBody().getId(), invalidRequest, String.class);
         assertThat(invalidResult.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(invalidResult.getBody()).contains("name must be less than/equal to 40 characters");
+        assertThat(invalidResult.getBody()).contains("name must be less than/equal to 80 characters");
 
         HttpEntity<String> invalidThroughputRequest = new HttpEntity<>(INVALID_THROUGHPUT_MACHINE_JSON, headers);
 

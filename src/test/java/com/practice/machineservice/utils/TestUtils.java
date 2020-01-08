@@ -18,7 +18,7 @@ public class TestUtils {
     public static final String UPDATE_MACHINE_NAME_JSON = "{\"name\": \"Gold plating machine #1\"}";
     public static final String UPDATE_MACHINE_THROUGHPUT_JSON = "{\"throughputMins\": \"20\"}";
 
-    public static final String INVALID_NAME_MACHINE_JSON = "{\"name\": \"machine_having_more_than_40_characters_10\"," +
+    public static final String INVALID_NAME_MACHINE_JSON = "{\"name\": \"a_very_very_long_and_invalid_machine_name_that_has_more_than_80_characters_100001\"," +
             "\"description\": \"some description\"," +
             "\"throughputMins\":\"100\"}";
 
