@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 
 import static com.practice.machineservice.utils.TestUtils.*;
 import static org.hamcrest.Matchers.hasSize;
@@ -56,7 +57,7 @@ public class MachineControllerTest {
 
     @Test
     public void testGetMachineByName() throws Exception {
-        given(machineService.getMachine("plating1")).willReturn(Collections.singletonList(MACHINE));
+        given(machineService.getMachinesByName("plating1")).willReturn(Collections.singletonList(MACHINE));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/machines/plating1"))
                 .andExpect(status().isOk())
@@ -70,7 +71,7 @@ public class MachineControllerTest {
 
     @Test
     public void testGetMachineById() throws Exception {
-        given(machineService.getMachineById(ORIGINAL_ID)).willReturn(MACHINE);
+        given(machineService.getMachineById(ORIGINAL_ID)).willReturn(Optional.of(MACHINE));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/machine/" + ORIGINAL_ID))
                 .andExpect(status().isOk())
@@ -82,7 +83,7 @@ public class MachineControllerTest {
 
     @Test
     public void testGetMachineByIdNotFound() throws Exception {
-        given(machineService.getMachineById(anyLong())).willThrow(new MachineNotFoundException());
+        given(machineService.getMachineById(anyLong())).willReturn(Optional.empty());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/machine/" + ORIGINAL_ID))
                 .andExpect(status().isNotFound());
@@ -91,7 +92,7 @@ public class MachineControllerTest {
 
     @Test
     public void testGetMachineByNameWhenMachineNotFound() throws Exception {
-        given(machineService.getMachine(anyString())).willThrow(new MachineNotFoundException());
+        given(machineService.getMachinesByName(anyString())).willThrow(new MachineNotFoundException());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/machines/plating9"))
                 .andExpect(status().isNotFound());
@@ -123,6 +124,7 @@ public class MachineControllerTest {
 
     @Test
     public void testUpdateMachineDescription() throws Exception {
+        given(machineService.getMachineById(UPDATE_ID)).willReturn(Optional.of(MACHINE));
         given(machineService.updateMachine(eq(UPDATE_ID), any(Machine.class))).willReturn(UPDATE_DESC_MACHINE);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/machine/" + UPDATE_ID)
@@ -133,6 +135,16 @@ public class MachineControllerTest {
                 .andExpect(jsonPath("name").value(UPDATE_DESC_MACHINE.getName()))
                 .andExpect(jsonPath("description").value(UPDATE_DESC_MACHINE.getDescription()))
                 .andExpect(jsonPath("throughputMins").value(UPDATE_DESC_MACHINE.getThroughputMins()));
+    }
+
+    @Test
+    public void testUpdateMachineDescriptionWithInvalidID() throws Exception {
+        given(machineService.getMachineById(UPDATE_ID)).willReturn(Optional.empty());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/machine/" + UPDATE_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(UPDATE_MACHINE_DESC_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -150,6 +162,7 @@ public class MachineControllerTest {
      */
     @Test
     public void testUpdateMachineName() throws Exception {
+        given(machineService.getMachineById(UPDATE_ID)).willReturn(Optional.of(MACHINE));
         given(machineService.updateMachine(eq(UPDATE_ID), any(Machine.class))).willReturn(UPDATE_NAME_MACHINE);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/machine/" + UPDATE_ID)
@@ -163,7 +176,18 @@ public class MachineControllerTest {
     }
 
     @Test
+    public void testUpdateMachineNameWithInvalidID() throws Exception {
+        given(machineService.getMachineById(UPDATE_ID)).willReturn(Optional.empty());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/machine/" + UPDATE_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(UPDATE_MACHINE_NAME_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void testUpdateMachineThroughput() throws Exception {
+        given(machineService.getMachineById(UPDATE_ID)).willReturn(Optional.of(MACHINE));
         given(machineService.updateMachine(eq(UPDATE_ID), any(Machine.class))).willReturn(UPDATE_THROUGHPUT_MACHINE);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/machine/" + UPDATE_ID)
@@ -177,8 +201,18 @@ public class MachineControllerTest {
     }
 
     @Test
+    public void testUpdateMachineThroughputWithInvalidID() throws Exception {
+        given(machineService.getMachineById(UPDATE_ID)).willReturn(Optional.empty());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/machine/" + UPDATE_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(UPDATE_MACHINE_THROUGHPUT_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void testReplaceMachineWhenIdIsNew() throws Exception {
-        given(machineService.getMachineById(UPDATE_ID)).willReturn(null);
+        given(machineService.getMachineById(UPDATE_ID)).willReturn(Optional.empty());
         given(machineService.createMachine(any(Machine.class))).willReturn(UPDATE_DESC_MACHINE);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/machine/" + UPDATE_ID)
@@ -193,7 +227,7 @@ public class MachineControllerTest {
 
     @Test
     public void testReplaceMachineWhenIdExists() throws Exception {
-        given(machineService.getMachineById(UPDATE_ID)).willReturn(UPDATE_DESC_MACHINE);
+        given(machineService.getMachineById(UPDATE_ID)).willReturn(Optional.of(UPDATE_DESC_MACHINE));
         given(machineService.updateMachine(anyLong(), any(Machine.class))).willReturn(UPDATE_DESC_MACHINE);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/machine/" + UPDATE_ID)

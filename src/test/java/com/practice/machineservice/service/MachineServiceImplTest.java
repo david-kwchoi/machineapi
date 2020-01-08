@@ -76,22 +76,20 @@ public class MachineServiceImplTest {
     @Test
     public void testUpdateMachineNotExisting() {
         given(machineRepository.getById(eq(ORIGINAL_ID))).willReturn(Optional.empty());
-        given(machineRepository.save(any(Machine.class))).willReturn(MACHINE);
 
-        Machine actual = machineService.updateMachine(ORIGINAL_ID, MACHINE);
-
-        assertThat(actual.getId()).isEqualTo(MACHINE.getId());
-        assertThat(actual.getName()).isEqualTo(MACHINE.getName());
-        assertThat(actual.getDescription()).isEqualTo(MACHINE.getDescription());
-        assertThat(actual.getThroughputMins()).isEqualTo(MACHINE.getThroughputMins());
+        assertThrows(MachineNotFoundException.class, () -> {
+            machineService.updateMachine(ORIGINAL_ID, MACHINE);
+        });
     }
 
     @Test
     public void testGetMachineById() {
         given(machineRepository.getById(1L)).willReturn(Optional.of(MACHINE));
 
-        Machine actual = machineService.getMachineById(1L);
+        Optional<Machine> actualOpt = machineService.getMachineById(1L);
 
+        assertThat(actualOpt.isPresent()).isTrue();
+        Machine actual = actualOpt.get();
         assertThat(actual.getId()).isEqualTo(MACHINE.getId());
         assertThat(actual.getName()).isEqualTo(MACHINE.getName());
         assertThat(actual.getDescription()).isEqualTo(MACHINE.getDescription());
@@ -102,9 +100,8 @@ public class MachineServiceImplTest {
     public void testGetMachineByIdNotFound() {
         given(machineRepository.getById(anyLong())).willReturn(Optional.empty());
 
-        assertThrows(MachineNotFoundException.class, () -> {
-            machineService.getMachineById(1L);
-        });
+        Optional<Machine> actual = machineService.getMachineById(1L);
+        assertThat(actual.isPresent()).isFalse();
     }
 
     @Test
@@ -112,7 +109,7 @@ public class MachineServiceImplTest {
         given(machineRepository.findAllByName("plating1"))
                 .willReturn(Collections.singletonList(MACHINE));
 
-        List<Machine> results = machineService.getMachine("plating1");
+        List<Machine> results = machineService.getMachinesByName("plating1");
         assertThat(results.size()).isEqualTo(1);
 
         Machine actual = results.get(0);
@@ -126,9 +123,8 @@ public class MachineServiceImplTest {
     public void testGetMachineByNameNotFound() {
         given(machineRepository.findAllByName(anyString())).willReturn(null);
 
-        assertThrows(MachineNotFoundException.class, () -> {
-            machineService.getMachine("abcasdasf");
-        });
+        List<Machine> machines = machineService.getMachinesByName("abcasdasf");
+        assertThat(machines.size()).isZero();
     }
 
 

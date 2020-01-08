@@ -69,7 +69,6 @@ public class Machine {
         this.description = description;
     }
 
-
     public Integer getThroughputMins() {
         return throughputMins;
     }
@@ -79,4 +78,13 @@ public class Machine {
     }
 
 
+    @Override
+    public String toString() {
+        return "Machine{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", throughputMins=" + throughputMins +
+                '}';
+    }
 }
